@@ -19,7 +19,7 @@ showtext_auto()
 
 
 #====[ONLY NEED TO DO IT ONCE, CAN SKIP] Set up: read in files and combine====
-setwd("/Users/zhouyuwei/Desktop/Elena")
+#setwd()
 
 filename <- file.choose()
 Qing_Huiguan_Sichuan <- read_excel(filename, col_names = TRUE, col_types = "text")
