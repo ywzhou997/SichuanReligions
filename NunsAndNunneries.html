@@ -1,4 +1,6 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -19,9 +21,11 @@
       "esri/config",
       "esri/views/MapView",
       "esri/widgets/ScaleBar",
+      "esri/widgets/Home",
+      "esri/widgets/Expand",
       "esri/widgets/Legend", 
 	"esri/WebMap"
-    ], (esriConfig, MapView, ScaleBar, Legend, WebMap) => {
+    ], (esriConfig, MapView, ScaleBar, Home, Expand, Legend, WebMap) => {
     esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurJak9CPH5_OFjiHujg4DhDrDXBndAKKZlYHnWI0YG_17hBmKL7WdjAeoIv4ePJUAfUmEWGfwmdnm3VE_L2dRQCuSlzTQorJXJ64CHnpdKP1Z3CdKIapGtg2PwTr_D8JCyx0CURbjdLvzbcKFhBiFSZGfgtQD2LzXVLXFT_Z_n_15-1mB9YKDHUvyEfGAjCcfR24wTPQ7Q44XOq0xaP2c02y6ab0TiT3kQ0ogBVGE8V_9ruzuGjm6wfLBUbatd9M-lo5xfB1ab8aKQumQEbgj99hUw88QunMi17mJtZK4lhxyfvDucMLFQ5eUV3YHn3O1QQ..AT1_fGP0u66a";
       const webmap = new WebMap({
         portalItem: {
@@ -46,8 +50,26 @@
       const scalebar = new ScaleBar({
         view: view
       });
-
       view.ui.add(scalebar, "bottom-left");
+
+      const homeBtn = new Home({
+        view: view
+      });
+      view.ui.add(homeBtn, "top-left");
+
+      const instructionsExpand = new Expand({
+        expandIcon: "question",
+        expandTooltip: "How to use this map",
+        view: view,
+        expanded: true,
+        content: `
+        <div style='width:300px; padding:10px; background-color:white'>
+          <b>Click</b> on the upper right pane to deselect sites based on type.<br> 
+          <b>Zoom in</b> to see the full names of the sites.<br>
+          <b>Click</b> on site pointers to see more informationt</div>
+        `
+      });
+      view.ui.add(instructionsExpand, "top-left");
 
     const legend = new Legend ({
         view: view
@@ -58,6 +80,12 @@
   </script>
 </head>
 <body>
+  <h1 style="font-size: 25px;position: relative;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;margin:1%">Sichuan Religion Project Map</h1>
 	<div id="viewDiv" style = "position:relative"></div>
+  <div class="footer" style="text-align:center">
+    <p style="font-size: small;">Projrect created and maintained by <a href="https://github.com/ywzhou997/">Yuwei Zhou</a></p>
+  </div>
 </body>
 </html>
