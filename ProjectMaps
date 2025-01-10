@@ -1,0 +1,73 @@
+<!--
+The following code comes from ESRI ArcGIS Online SDK for Javascript example of layerlist Widget.
+
+https://developers.arcgis.com/javascript/latest/sample-code/widgets-layerlist/
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>Sichuan Religions Project Map</title>
+	<style>
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 580pt;
+      width: 100%;
+    }
+  </style>
+	<link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+	<script src="https://js.arcgis.com/4.29/"></script>
+
+	<script>
+    require([
+      "esri/config",
+      "esri/views/MapView",
+      "esri/widgets/ScaleBar",
+      "esri/widgets/LayerList",
+	  "esri/WebMap"
+    ], (esriConfig, MapView, ScaleBar,LayerList, WebMap) => {
+esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurJak9CPH5_OFjiHujg4DhDrDXBndAKKZlYHnWI0YG_17hBmKL7WdjAeoIv4ePJUAfUmEWGfwmdnm3VE_L2dRQCuSlzTQorJXJ64CHnpdKP1Z3CdKIapGtg2PwTr_D8JCyx0CURbjdLvzbcKFhBiFSZGfgtQD2LzXVLXFT_Z_n_15-1mB9YKDHUvyEfGAjCcfR24wTPQ7Q44XOq0xaP2c02y6ab0TiT3kQ0ogBVGE8V_9ruzuGjm6wfLBUbatd9M-lo5xfB1ab8aKQumQEbgj99hUw88QunMi17mJtZK4lhxyfvDucMLFQ5eUV3YHn3O1QQ..AT1_fGP0u66a";
+      const webmap = new WebMap({
+        portalItem: {
+          id: "7ffa8f2449824e7bb4003e409894f9d9"
+        }
+      });
+      const view = new MapView({
+        container: "viewDiv",
+        map: webmap
+      });
+      view.popup.dockOptions = {
+        breakpoint: false,
+        buttonEnabled: false,
+        breakpoint: {
+          width: 1200,
+          height: 1200
+        },
+        position: "top-left"
+      };
+      const scalebar = new ScaleBar({
+        view: view
+      });
+      view.ui.add(scalebar, "bottom-left");
+      view.when(() => {
+        const layerList = new LayerList({
+          view: view
+        });
+        // Add widget to the top right corner of the view
+        view.ui.add(layerList, "top-right");
+      });
+    });
+  </script>
+</head>
+
+<body>
+	<div id="viewDiv" style="position:relative"></div>
+
+<div class="footer">
+    <a href="http://github.com/necolas/css3-social-signin-buttons">CSS3 Social Sign-in Buttons</a> by <a href="http://nicolasgallagher.com">Nicolas Gallagher</a>.
+</div>
+
+</body>
+</html>
