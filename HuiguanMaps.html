@@ -1,0 +1,241 @@
+<head>
+<style>
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 500pt;
+      width: 100%;
+    }
+
+    .map-btn {
+      margin: 0 auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      overflow: auto;
+      background-color: #fff;
+    }
+
+    .map-btn-switch {
+      flex-grow: 4;
+      background-color: rgba(241, 163, 118, 0.5);
+      padding: 10px;
+      color: #fff;
+      margin: 2px;
+      height: 100%;
+      width: 10%;
+      font-size: 12px;
+      border-radius: 5px;
+      font-weight: 200;
+      overflow: auto;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .active-map {
+      color: #fff;
+      background-color: rgba(241, 163, 118, 1);
+      font-weight: 700;
+      font-size: 12px;
+    }
+  </style>
+
+<link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
+<script src="https://js.arcgis.com/4.29/"></script>
+
+<script>
+    /******
+     * Source code comes from Esri developer tutorial
+     * Swap web maps in the same view
+     * https://developers.arcgis.com/javascript/latest/sample-code/webmap-swap/
+     ******/
+    require([
+      "esri/config",
+      "esri/views/MapView",
+      "esri/widgets/ScaleBar",
+      "esri/widgets/Legend",
+	  "esri/WebMap"
+    ], (esriConfig, MapView, ScaleBar, Legend, WebMap) => {
+      esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurJak9CPH5_OFjiHujg4DhDrDXBndAKKZlYHnWI0YG_17hBmKL7WdjAeoIv4ePJUAfUmEWGfwmdnm3VE_L2dRQCuSlzTQorJXJ64CHnpdKP1Z3CdKIapGtg2PwTr_D8JCyx0CURbjdLvzbcKFhBiFSZGfgtQD2LzXVLXFT_Z_n_15-1mB9YKDHUvyEfGAjCcfR24wTPQ7Q44XOq0xaP2c02y6ab0TiT3kQ0ogBVGE8V_9ruzuGjm6wfLBUbatd9M-lo5xfB1ab8aKQumQEbgj99hUw88QunMi17mJtZK4lhxyfvDucMLFQ5eUV3YHn3O1QQ..AT1_fGP0u66a";
+      const webmapids = [
+        "f5d5f81f0c6a4748aa19b64dd756925c",
+        "4522aa2ac2fe4a0db3f09f6c0ea00d03",
+        "f82fcdf963094e51b2f8b536013e2133",
+        "e501a89a6eaf4e3497906b73016cfd2a",
+        "612cb10b65ef4a70a1703c71bd47980d",
+        "a9a688b4a7b94b13804aa65d7b391221",
+        "deb50a761219460591496a0b3a0750f3",
+        "3834b3c9f1e54fde9f5d4530109776d5"
+      ];
+      /***************
+       * Create multiple WebMap instances
+       *****************/
+      const webmaps = webmapids.map((webmapid) => {
+        return new WebMap({
+          portalItem: {
+            id: webmapid
+          }
+        });
+      });
+      /***********************
+       * Initialize the View with the first WebMap
+       **********************/
+      const view = new MapView({
+        map: webmaps[0],
+        container: "viewDiv",
+		center: [104.838384, 30.158838]
+      });
+      /****************************
+       * On a button click, change the map of the View
+      *****************************/
+      document.querySelector(".map-btn").addEventListener("click", (event) => {
+        const id = event.target.getAttribute("data-id");
+        console.log(event.target.getAttribute("data-id"))
+        if (id) {
+          const webmap = webmaps[id];
+          view.map = webmap;
+          const nodes = document.querySelectorAll(".map-btn-switch");
+          for (let idx = 0; idx < nodes.length; idx++) {
+            const node = nodes[idx];
+            const mapIndex = node.getAttribute("data-id");
+            if (mapIndex === id) {
+              node.classList.add("active-map");
+            } else {
+              node.classList.remove("active-map");
+            }
+          }
+        }
+      });
+      view.popup.dockOptions = {
+        breakpoint: false,
+        buttonEnabled: false,
+        breakpoint: {
+          width: 1200,
+          height: 1200
+        },
+        position: "top-left"
+      };
+      const scalebar = new ScaleBar({
+        view: view
+      });
+      view.ui.add(scalebar, "bottom-left");
+      const legend = new Legend({
+        view: view
+      });
+      view.ui.add(legend, "top-right");
+    });
+	  
+  </script>
+</head>
+
+<body>
+	<div> <h3> Distribution of <em>Huiguan</em> in Sichuan </h3> <p><span style="font-size: 14pt;">The interactive maps below indicate the distribution of seven major huiguan in Sichuan province, divided by prefecture. Users can click corresponding buttons to view their individual distibution. </span> </p>
+	<p><span style="font-size: 14pt;"> Each <em>huiguan</em> has a different color. Because of the large number of <em>huiguan</em> that were built, the first map only indicates the largest number of <em>huiguan</em> in each prefecture. The other maps represent the distribution of the most common <em>huiguan</em>, individually, in each prefecture. These maps are created with ArcGIS. The base map was created on the basis of <a href = "https://chgis.fairbank.fas.harvard.edu/">China Historical GIS (CHGIS)</a> at Harvard. </span> </p> </div>
+	
+<section class="esri-widget">
+	<div class="map-btn">
+	<div class="map-btn-switch active-map" data-id="0">主要會館<br>Predominant</div>
+	<div class="map-btn-switch" data-id="1">禹王宮<br>Yuwanggong</div>
+	<div class="map-btn-switch" data-id="2">萬壽宮<br>Wanshougong</div>
+	<div class="map-btn-switch" data-id="3">川主廟<br>Chuanzhumiao</div>
+	<div class="map-btn-switch" data-id="4">南華宮<br>Nanhuagong</div>
+	<div class="map-btn-switch" data-id="5">天后宮<br>Tianhougong</div>
+	<div class="map-btn-switch" data-id="6">帝主宮<br>Dizhugong</div>
+	<div class="map-btn-switch" data-id="7">關帝廟 <br>Guandimiao</div>
+	</div>
+</section>
+<div id="viewDiv" class="esri-widget"></div>
+</body>
+
+
+
+<!------ before 2024, code for webapp>
+
+	<script>
+		function RS_click (flag) {
+            switch(flag){
+                case 1: document.getElementById('map_show').src = 'https://arcgis.com/apps/instant/basic/index.html?appid=0bfd1969db0a4348b28d4d56ad557f13'; break;
+                case 2: document.getElementById('map_show').src = 'https://ywgzsovdgeciwws0.maps.arcgis.com/apps/instant/basic/index.html?appid=d277ad6d42a14657b38c3425396a64a6'; break;
+                case 3: document.getElementById('map_show').src = 'https://ywgzsovdgeciwws0.maps.arcgis.com/apps/instant/basic/index.html?appid=78d731e509e74d1ba0b4a0082a048ca1'; break;
+                case 4: document.getElementById('map_show').src = 'https://ywgzsovdgeciwws0.maps.arcgis.com/apps/instant/basic/index.html?appid=e870dcc655a0402a996ce33b7328a419'; break;
+                case 5: document.getElementById('map_show').src = 'https://ywgzsovdgeciwws0.maps.arcgis.com/apps/instant/basic/index.html?appid=4de681c544fd4b7882d212c57906c8df'; break;
+                case 6: document.getElementById('map_show').src = 'https://ywgzsovdgeciwws0.maps.arcgis.com/apps/instant/basic/index.html?appid=d2a2399bf95a47f0901d25874540ab9c'; break;
+                case 7: document.getElementById('map_show').src = 'https://ywgzsovdgeciwws0.maps.arcgis.com/apps/instant/basic/index.html?appid=8d006bacae354ce2838292eebd97507e'; break;
+                case 8: document.getElementById('map_show').src = 'https://ywgzsovdgeciwws0.maps.arcgis.com/apps/instant/basic/index.html?appid=9dc88cd525ae4fb2925ee6a607728de5'; break;
+            }
+
+        }
+
+	</script>
+	
+<div> <h3> Distribution of <em>Huiguan</em> in Sichuan </h3> <p><span style="font-size: 14pt;">The interactive maps below indicate the distribution of seven major huiguan in Sichuan province, divided by prefecture. Users can click corresponding buttons to view their individual distibution. </span> </p>
+	<p><span style="font-size: 14pt;"> Each <em>huiguan</em> has a different color. Because of the large number of <em>huiguan</em> that were built, the first map only indicates the largest number of <em>huiguan</em> in each prefecture. The other maps represent the distribution of the most common <em>huiguan</em>, individually, in each prefecture. These maps are created with ArcGIS. The base map was created on the basis of <a href = "https://chgis.fairbank.fas.harvard.edu/">China Historical GIS (CHGIS)</a> at Harvard. </span> </p> </div>
+	
+<div class = "btn-row">
+<button class = "bt1" href="javascript:void(0);" onclick="RS_click(1)"> 主要會館 Predominant Huiguan </button> 
+
+<button class = "bt1" href="javascript:void(0);" onclick="RS_click(2)"> 禹王宮  Yuwanggong  </button>
+	
+<button class = "bt1" href="javascript:void(0);" onclick="RS_click(3)"> 萬壽宮 Wanshougong </button>
+	
+<button class = "bt1" href="javascript:void(0);" onclick="RS_click(4)"> 川主廟 Chuanzhumiao </button>
+
+<button class = "bt1" href="javascript:void(0);" onclick="RS_click(5)"> 南華宮 Nanhuagong </button>
+	
+<button class = "bt1" href="javascript:void(0);" onclick="RS_click(6)"> 天后宮 Tianhougong </button>
+	
+<button class = "bt1" href="javascript:void(0);" onclick="RS_click(7)"> 帝主宮  Dizhugong </button> 
+	
+<button class = "bt1" href="javascript:void(0);" onclick="RS_click(8)"> 關帝廟 Guandimiao </button>
+
+</div>
+
+<div class="embed-container">
+<iframe id = "map_show" src="https://arcgis.com/apps/instant/basic/index.html?appid=0bfd1969db0a4348b28d4d56ad557f13" width="400" height="600" frameborder="0" style="border:0" allowfullscreen>iFrames are not supported on this page.</iframe></div>
+
+<style>
+	
+.btn-row {
+	display: flex;
+    justify-content: space-between;
+	padding: 30px 0px;
+	position: relative;
+	}
+.bt1 {
+	border: none;
+	color: #FFFFFF;
+	background-color: #F1A376;
+	text-align: center;
+	text-decoration: none;
+	display: flex;
+	font-size: 10px;
+	cursor: pointer;
+	width: 120px;
+	height: 55px;
+	border-radius: 5px;
+	position: relative;
+	text-transform: unset !important;
+	font-weight: 200;
+}
+
+.embed-container {
+	position: relative; 
+	padding-bottom: 80%; 
+	height: 0; 
+	max-width: 100%;} 
+.embed-container iframe, .embed-container object, .embed-container iframe{
+	float: center; 
+	position: absolute; 
+	top: -100; 
+	left: 0; 
+	width: 100%; 
+	height: 70%;} 
+	small{
+		position: absolute; 
+		z-index: 40; 
+		bottom: 0; 
+		margin-bottom: 0;}
+</style>
+
+<------>
