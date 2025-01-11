@@ -11,4 +11,5 @@ Access the visualizations through the following links:
 Sichuan Religion Project Map: [Project Website](https://sichuanreligions.com/map/) or [Web Map](https://ywzhou997.github.io/SichuanReligions/ProjectMap.html)
 
 Huiguan Maps:[Project Website](https://sichuanreligions.com/huiguan_project/) or [Web Map](https://ywzhou997.github.io/SichuanReligions/HuiguanMap.html)
-Nunnery Map: 
+
+Nunnery Map: [Project Website](https://sichuanreligions.com/buddhist-nunneries-nuns/) or [Web Map](https://ywzhou997.github.io/SichuanReligions/NunneryMap.html)
