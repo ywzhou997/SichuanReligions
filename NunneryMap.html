@@ -2,9 +2,9 @@
 <html lang="en">
 
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-	<title>Nunneries in Sichuan</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Nunneries in Sichuan</title>
   <style>
     #viewDiv {
       padding: 0;
@@ -14,20 +14,20 @@
       position: relative;
     }
   </style>
-	<link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
-	<script src="https://js.arcgis.com/4.29/"></script>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.29/"></script>
 
-	<script>
+  <script>
     require([
       "esri/config",
       "esri/views/MapView",
       "esri/widgets/ScaleBar",
       "esri/widgets/Home",
       "esri/widgets/Expand",
-      "esri/widgets/Legend", 
-	"esri/WebMap"
-    ], (esriConfig, MapView, ScaleBar, Home, Expand, Legend, WebMap) => {
-    esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurJak9CPH5_OFjiHujg4DhDrfNJN-3s9HUUCb-dyOTWRfw97Ykq5CvfrjgPlMCruAG4iWn6X5yra33u9pRN63qSqix6wueKYEzKs30n7Em-TI3I6gSH4VlHJKT_Xg8M7gCdXBbN71y4VEd9qsOS5i6oPHi9MmW01WbvejFrFy_F3TF8xtkWu6Tg5W2A_g-7zWgu3DBta9858YwY4p-eVX39tyKNsxRwF_a14esuUTgyWJl5N46IYQ3hdOZwO710AdcZ8UgC_1TPkt5p6Ar8uNd5uxd1lS7MLVo6aeO3lb4pfbCZJHSR11k_CAceulBUAuXA..AT1_fGP0u66a";
+      "esri/widgets/LayerList",
+      "esri/WebMap"
+    ], (esriConfig, MapView, ScaleBar, Home, Expand, LayerList, WebMap) => {
+      esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurJak9CPH5_OFjiHujg4DhDpYjoy1ZI7ZImmpbjZhHm-DYB-uHrLLAQgS5O4cVN9Rxy2kN4cVJJrm4CPF4Qe2AFHAoqItlBjy1wUSCQJQRNa4YRIqClmQt6JzNnl1uM_bctw_GKQWqnGyBtMkvWVqczbhyyGvhc-HuvcFAGn7Gk8tzEuoyzUIIaYvydtxO7FsFe_3zfJHQr0sRybdNhD3yVmj-aMQyGNOwtwjeMiJxu8PoaqDtwQbXeQ1UC_BalOxT1qiaYJSq382aGiFdRzQ1rt8T1E5ZPrG9Aw0kfu4zdQi2ZbtF999PuFK4bm_jxDx5A..AT1_jaVOiTc2";
       const webmap = new WebMap({
         portalItem: {
           id: "1b1a1809fe8a494bb674c0b3f43cc21c"
@@ -38,7 +38,7 @@
         container: "viewDiv",
         map: webmap
       });
-		view.popup.dockOptions = {
+      view.popup.dockOptions = {
         breakpoint: false,
         buttonEnabled: false,
         breakpoint: {
@@ -64,28 +64,34 @@
         view: view,
         expanded: true,
         content: `
-        <div style='width:300px; padding:10px; background-color:white'>
-          <b>Zoom in</b> to see the full names of the sites.<br>
-          <b>Click</b> on site pointers to see more informationt</div>
-        `
+            <div style='width:300px; padding:10px; background-color:white'>
+              <b>Zoom in</b> to see the full names of the sites.<br>
+              <b>Click</b> on site pointers to see more informationt</div>
+            `
       });
       view.ui.add(instructionsExpand, "top-left");
 
-    const legend = new Legend ({
-        view: view
+      view.when(() => {
+        const layerList = new LayerList({
+          view: view
+        });
+        // Add widget to the top right corner of the view
+        view.ui.add(layerList, "top-right");
       });
-      view.ui.add(legend, "top-right");
 
-  });
+    });
   </script>
 </head>
+
 <body>
   <h1 style="font-size: 25px;position: relative;
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;margin:1%">Buddhist Nunneries and Nuns Map</h1>
-	<div id="viewDiv" style = "position:relative"></div>
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;margin:1%">Buddhist Nunneries and Nuns Map</h1>
+  <div id="viewDiv" style="position:relative"></div>
   <div class="footer" style="text-align:center">
-    <p style="font-size: small;">Projrect created and maintained by <a href="https://github.com/ywzhou997/">Yuwei Zhou</a></p>
+    <p style="font-size: small;">Projrect created and maintained by <a href="https://github.com/ywzhou997/">Yuwei
+        Zhou</a></p>
   </div>
 </body>
+
 </html>
