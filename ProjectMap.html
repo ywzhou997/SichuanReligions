@@ -1,7 +1,8 @@
 <!--
 The following code comes from ESRI ArcGIS Online SDK for Javascript example of layerlist Widget.
-
-https://developers.arcgis.com/javascript/latest/sample-code/widgets-layerlist/
+https://developers.arcgis.com/documentation/mapping-and-location-services/mapping/web-maps/
+and
+https://developers.arcgis.com/javascript/latest/sample-code/layer-list/
 -->
 <!DOCTYPE html>
 <html lang="en">
@@ -19,85 +20,100 @@ https://developers.arcgis.com/javascript/latest/sample-code/widgets-layerlist/
       position: relative;
     }
   </style>
-  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css">
-  <script src="https://js.arcgis.com/4.29/"></script>
-
+  <link rel="stylesheet" href="https://js.arcgis.com/5.2/esri/themes/light/main.css" />
   <script>
-    require([
-      "esri/config",
-      "esri/views/MapView",
-      "esri/widgets/ScaleBar",
-      "esri/widgets/Home",
-      "esri/widgets/Expand",
-      "esri/widgets/LayerList",
-      "esri/WebMap"
-    ], (esriConfig, MapView, ScaleBar, Home, Expand, LayerList, WebMap) => {
-      esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurJak9CPH5_OFjiHujg4DhDpYjoy1ZI7ZImmpbjZhHm-DYB-uHrLLAQgS5O4cVN9Rxy2kN4cVJJrm4CPF4Qe2AFHAoqItlBjy1wUSCQJQRNa4YRIqClmQt6JzNnl1uM_bctw_GKQWqnGyBtMkvWVqczbhyyGvhc-HuvcFAGn7Gk8tzEuoyzUIIaYvydtxO7FsFe_3zfJHQr0sRybdNhD3yVmj-aMQyGNOwtwjeMiJxu8PoaqDtwQbXeQ1UC_BalOxT1qiaYJSq382aGiFdRzQ1rt8T1E5ZPrG9Aw0kfu4zdQi2ZbtF999PuFK4bm_jxDx5A..AT1_jaVOiTc2";
-      const webmap = new WebMap({
-        portalItem: {
-          id: "7ffa8f2449824e7bb4003e409894f9d9"
-        }
-      });
+    globalThis.esriConfig = {
+      apiKey: "AAPTaQEQzNWZ0WEvEvKbqlg6rkg..gsvO727LwsNXqFt0JP8NvoSWy79pHRsSedPcdbmeXycD5QYxFkdAcq7s5JkWV34vC9U8G1DMUsrE1cmyakycmS5p8aZdCVWRKFwNLqL-oMgzveI3s9-ubiIR1BUfIaVflP6ElUBsCQgTe8PLTlDepO2Nn2p-VnVT6kZzz01ygw21kTHTc3tj5BvftC7merFVanwR1_HxznnKFLm5CaFLL4fbPww7trBNMXFKfZv1W_CwDMu63PN_gEqdrlzpP903HG0UqCVEF0eD57pbv5NsRT3W44mpbtiRWTXw6dTQpmbZX8mRHESz8NM439kpso2hYEEld5MgV0iZet4hMqQsNimzAT1_cwiX1Ncd"
+    }
+  </script>
 
-      const view = new MapView({
-        container: "viewDiv",
-        map: webmap
-      });
+  <script type="module" src="https://js.arcgis.com/5.2"></script>
 
-      view.popup.dockOptions = {
-        breakpoint: false,
-        buttonEnabled: false,
-        breakpoint: {
-          width: 1200,
-          height: 1200
-        },
-        position: "top-left"
-      };
+  <script type="module">
+    const [WebMap, MapView] = await $arcgis.import([
+      "@arcgis/core/WebMap.js",
+      "@arcgis/core/views/MapView.js"
+    ]);
 
-      const scalebar = new ScaleBar({
-        view: view
-      });
-      view.ui.add(scalebar, "bottom-left");
-
-      const homeBtn = new Home({
-        view: view
-      });
-      view.ui.add(homeBtn, "top-left");
-
-      const instructionsExpand = new Expand({
-        expandIcon: "question",
-        expandTooltip: "How to use this map",
-        view: view,
-        expanded: true,
-        content: `
-        <div style='width:300px; padding:10px; background-color:white'>
-          <b>Click</b> on the upper right pane to deselect sites based on type.<br> 
-          <b>Zoom in</b> to see the full names of the sites.<br>
-          <b>Click</b> on site pointers to see more informationt</div>
-        `
-      });
-      view.ui.add(instructionsExpand, "top-left");
-
-      view.when(() => {
-        const layerList = new LayerList({
-          view: view
-        });
-        // Add widget to the top right corner of the view
-        view.ui.add(layerList, "top-right");
-      });
+    const webmap = new WebMap({
+      portalItem: {
+        id: "7ffa8f2449824e7bb4003e409894f9d9"
+      }
     });
+
+    const view = new MapView({
+      container: "viewDiv",
+      map: webmap
+    });
+
+    //Scale bar
+    await customElements.whenDefined("arcgis-scale-bar");
+
+    const scaleBar = document.createElement("arcgis-scale-bar");
+    scaleBar.view = view;                  // Use this map's zoom and scale.
+    scaleBar.unit = "metric";              // Show meters or kilometers.
+    view.ui.add(scaleBar, "bottom-left");  // Position it on the map.
+
+
+    //Expand
+    await customElements.whenDefined("arcgis-expand");
+
+    const instructionsExpand = document.createElement("arcgis-expand");
+    instructionsExpand.view = view;
+    instructionsExpand.expandIcon = "question";
+    instructionsExpand.expandTooltip = "How to use this map";
+    instructionsExpand.expanded = true;
+    instructionsExpand.innerHTML = `
+  <div style="width: 300px; padding: 10px; background-color: white">
+    <b>Click</b> the upper-right panel to show or hide sites by type.<br>
+    <b>Zoom in</b> to see the full site names.<br>
+    <b>Click</b> a site marker to see more information.  </div>
+`;
+   view.ui.add(instructionsExpand, "top-left");
+   
+    /*
+          view.popup.dockOptions = {
+            breakpoint: false,
+            buttonEnabled: false,
+            breakpoint: {
+              width: 1200,
+              height: 1200
+            },
+            position: "top-left"
+          };
+    
+ 
+
+
+    const homeBtn = new Home({
+      view: view
+    });
+    view.ui.add(homeBtn, "top-left");
+
+
+
+    /*
+        view.when(() => {
+          const layerList = new LayerList({
+            view: view
+          });
+          // Add widget to the top right corner of the view
+          view.ui.add(layerList, "top-right");
+        });
+        */
   </script>
 </head>
 
 <body>
-    <h1 style="font-size: 25px;position: relative;
+  <h1 style="font-size: 25px;position: relative;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;margin:1%">Sichuan Religion Project Map</h1>
 
   <div id="viewDiv" style="position:relative"></div>
 
   <div class="footer" style="text-align:center">
-    <p style="font-size: small;">Projrect created and maintained by <a href="https://github.com/ywzhou997/">Yuwei Zhou</a></p>
+    <p style="font-size: small;">Projrect created and maintained by <a href="https://github.com/ywzhou997/">Yuwei
+        Zhou</a></p>
   </div>
 
 </body>
