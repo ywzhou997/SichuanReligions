@@ -30,9 +30,18 @@ https://developers.arcgis.com/javascript/latest/references/core/widgets/TimeSlid
       font-size: 14px;
       text-align: center;
     }
-
-    
+    html.is-embedded .footer {
+      display: none;
+    }
   </style>
+
+  <script>
+    if (window.self !== window.top) {
+      document.documentElement.classList.add("is-embedded");
+    }
+  </script>
+
+
   <link rel="stylesheet" href="https://js.arcgis.com/5.2/esri/themes/light/main.css" />
   <script>
     globalThis.esriConfig = {

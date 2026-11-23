@@ -58,7 +58,18 @@
       background: var(--calcite-color-foreground-1, white);
       color: var(--calcite-color-text-1, black);
     }
+
+    html.is-embedded .footer {
+      display: none;
+    }
   </style>
+
+  <script>
+    if (window.self !== window.top) {
+      document.documentElement.classList.add("is-embedded");
+    }
+  </script>
+
 
   <link rel="stylesheet" href="https://js.arcgis.com/5.2/esri/themes/light/main.css" />
   <script>
@@ -114,20 +125,29 @@
   <h1>Distribution of <em>Huiguan</em> in Sichuan</h1>
 
   <div class="map-choices" role="group" aria-label="Huiguan maps">
-    <button type="button" data-item-id="f5d5f81f0c6a4748aa19b64dd756925c" aria-pressed="true" aria-controls="viewDiv"><span lang="zh-Hant">主要會館</span><br>Predominant</button>
-    <button type="button" data-item-id="4522aa2ac2fe4a0db3f09f6c0ea00d03" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">禹王宮</span><br>Yuwanggong</button>
-    <button type="button" data-item-id="f82fcdf963094e51b2f8b536013e2133" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">萬壽宮</span><br>Wanshougong</button>
-    <button type="button" data-item-id="e501a89a6eaf4e3497906b73016cfd2a" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">川主廟</span><br>Chuanzhumiao</button>
-    <button type="button" data-item-id="612cb10b65ef4a70a1703c71bd47980d" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">南華宮</span><br>Nanhuagong</button>
-    <button type="button" data-item-id="a9a688b4a7b94b13804aa65d7b391221" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">天后宮</span><br>Tianhougong</button>
-    <button type="button" data-item-id="deb50a761219460591496a0b3a0750f3" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">帝主宮</span><br>Dizhugong</button>
-    <button type="button" data-item-id="3834b3c9f1e54fde9f5d4530109776d5" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">關帝廟</span><br>Guandimiao</button>
+    <button type="button" data-item-id="f5d5f81f0c6a4748aa19b64dd756925c" aria-pressed="true"
+      aria-controls="viewDiv"><span lang="zh-Hant">主要會館</span><br>Predominant</button>
+    <button type="button" data-item-id="4522aa2ac2fe4a0db3f09f6c0ea00d03" aria-pressed="false"
+      aria-controls="viewDiv"><span lang="zh-Hant">禹王宮</span><br>Yuwanggong</button>
+    <button type="button" data-item-id="f82fcdf963094e51b2f8b536013e2133" aria-pressed="false"
+      aria-controls="viewDiv"><span lang="zh-Hant">萬壽宮</span><br>Wanshougong</button>
+    <button type="button" data-item-id="e501a89a6eaf4e3497906b73016cfd2a" aria-pressed="false"
+      aria-controls="viewDiv"><span lang="zh-Hant">川主廟</span><br>Chuanzhumiao</button>
+    <button type="button" data-item-id="612cb10b65ef4a70a1703c71bd47980d" aria-pressed="false"
+      aria-controls="viewDiv"><span lang="zh-Hant">南華宮</span><br>Nanhuagong</button>
+    <button type="button" data-item-id="a9a688b4a7b94b13804aa65d7b391221" aria-pressed="false"
+      aria-controls="viewDiv"><span lang="zh-Hant">天后宮</span><br>Tianhougong</button>
+    <button type="button" data-item-id="deb50a761219460591496a0b3a0750f3" aria-pressed="false"
+      aria-controls="viewDiv"><span lang="zh-Hant">帝主宮</span><br>Dizhugong</button>
+    <button type="button" data-item-id="3834b3c9f1e54fde9f5d4530109776d5" aria-pressed="false"
+      aria-controls="viewDiv"><span lang="zh-Hant">關帝廟</span><br>Guandimiao</button>
   </div>
 
   <arcgis-map id="viewDiv" aria-label="Distribution of Huiguan in Sichuan">
     <arcgis-zoom slot="top-left"></arcgis-zoom>
     <arcgis-home slot="top-left"></arcgis-home>
-    <arcgis-expand slot="top-left" expand-icon="question" expand-tooltip="How to use this map" collapse-tooltip="Hide map instructions" expanded>
+    <arcgis-expand slot="top-left" expand-icon="question" expand-tooltip="How to use this map"
+      collapse-tooltip="Hide map instructions" expanded>
       <div class="map-instructions">
         Choose a huiguan map above.<br>
         Zoom in to see prefecture names.<br>
