@@ -1,0 +1,140 @@
+<!--
+The following code comes from ESRI ArcGIS Online SDK for Javascript example of layerlist Widget.
+https://developers.arcgis.com/documentation/mapping-and-location-services/mapping/web-maps/
+and
+https://developers.arcgis.com/javascript/latest/sample-code/layer-list/
+https://developers.arcgis.com/javascript/latest/references/core/widgets/TimeSlider/
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Sichuan Religions Project Time Map</title>
+  <style>
+    #viewDiv {
+      padding: 0;
+      margin: auto;
+      height: 450pt;
+      width: 90%;
+      position: relative;
+    }
+
+    #timeSliderDiv {
+      width: 90%;
+      margin: 1rem auto;
+    }
+
+    #timeStatus {
+      font-size: 14px;
+      text-align: center;
+    }
+
+    
+  </style>
+  <link rel="stylesheet" href="https://js.arcgis.com/5.2/esri/themes/light/main.css" />
+  <script>
+    globalThis.esriConfig = {
+      apiKey: "AAPTaQEQzNWZ0WEvEvKbqlg6rkg..gsvO727LwsNXqFt0JP8NvoSWy79pHRsSedPcdbmeXycD5QYxFkdAcq7s5JkWV34vC9U8G1DMUsrE1cmyakycmS5p8aZdCVWRKFwNLqL-oMgzveI3s9-ubiIR1BUfIaVflP6ElUBsCQgTe8PLTlDepO2Nn2p-VnVT6kZzz01ygw21kTHTc3tj5BvftC7merFVanwR1_HxznnKFLm5CaFLL4fbPww7trBNMXFKfZv1W_CwDMu63PN_gEqdrlzpP903HG0UqCVEF0eD57pbv5NsRT3W44mpbtiRWTXw6dTQpmbZX8mRHESz8NM439kpso2hYEEld5MgV0iZet4hMqQsNimzAT1_cwiX1Ncd"
+    }
+  </script>
+  <script type="module" src="https://js.arcgis.com/5.2"></script>
+
+
+  <script type="module">
+    const [WebMap, MapView, TimeSlider, timeUtils] = await $arcgis.import([
+      "@arcgis/core/WebMap.js",
+      "@arcgis/core/views/MapView.js",
+      "@arcgis/core/widgets/TimeSlider.js",
+      "@arcgis/core/support/timeUtils.js"
+    ]);
+
+    const webmap = new WebMap({
+      portalItem: {
+        id: "6910edc49b0f41f49298b6dff34da53b"
+      }
+    });
+
+    const view = new MapView({
+      container: "viewDiv",
+      map: webmap
+    });
+
+    //Scale bar
+    await customElements.whenDefined("arcgis-scale-bar");
+
+    const scaleBar = document.createElement("arcgis-scale-bar");
+    scaleBar.view = view;                  // Use this map's zoom and scale.
+    scaleBar.unit = "metric";              // Show meters or kilometers.
+    view.ui.add(scaleBar, "bottom-left");  // Position it on the map.
+
+
+    //Expand
+    await customElements.whenDefined("arcgis-expand");
+
+    const instructionsExpand = document.createElement("arcgis-expand");
+    instructionsExpand.view = view;
+    instructionsExpand.expandIcon = "question";
+    instructionsExpand.expandTooltip = "How to use this map";
+    instructionsExpand.expanded = true;
+    instructionsExpand.innerHTML = `
+  <div style="width: 300px; padding: 10px; background-color: white">
+    <b>Click</b> the upper-right panel to show or hide sites by type.<br>
+    <b>Zoom in</b> to see the full site names.<br>
+    <b>Click</b> a site marker to see more information.  </div>
+`;
+    view.ui.add(instructionsExpand, "top-left");
+
+    const timeStatus = document.querySelector("#timeStatus");
+    try {
+      await view.when();
+      const savedSettings =
+        await timeUtils.getTimeSliderSettingsFromWebDocument(webmap);
+      const fullTimeExtent = savedSettings?.fullTimeExtent ??
+        await timeUtils.getTimeExtentFromLayers(webmap.allLayers);
+
+      if (!fullTimeExtent?.start || !fullTimeExtent?.end) {
+        throw new Error("Enable time on the map layers and save the Web Map's time settings.");
+      }
+
+      const timeSlider = new TimeSlider({
+        container: "timeSliderDiv",
+        mode: "instant",
+        stops: { interval: { value: 1, unit: "years" } },
+        timeExtent: {
+          start: fullTimeExtent.start,
+          end: fullTimeExtent.start
+        },
+        ...savedSettings,
+        fullTimeExtent,
+        view,
+        loop: true,
+        playRate: 1000
+      });
+      window.addEventListener("pagehide", () => timeSlider.destroy(), { once: true });
+      timeStatus.textContent = "Select a date or press Play to explore the sites over time.";
+    } catch (error) {
+      timeStatus.textContent = "The time slider could not load. Check the map's time settings and layer access.";
+      console.error("Time slider initialization failed", error);
+    }
+  </script>
+</head>
+
+<body>
+  <h1 style="font-size: 25px;position: relative;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;margin:1%">Sichuan Religion Project Time Map</h1>
+
+  <div id="viewDiv" style="position:relative"></div>
+  <p id="timeStatus" role="status">Loading the timeline…</p>
+  <div id="timeSliderDiv"></div>
+
+  <div class="footer" style="text-align:center">
+    <p style="font-size: small;">Projrect created and maintained by <a href="https://github.com/ywzhou997/">Yuwei
+        Zhou</a></p>
+  </div>
+
+</body>
+
+</html>

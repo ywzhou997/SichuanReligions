@@ -20,19 +20,22 @@ https://developers.arcgis.com/javascript/latest/sample-code/layer-list/
       position: relative;
     }
   </style>
+
+
   <link rel="stylesheet" href="https://js.arcgis.com/5.2/esri/themes/light/main.css" />
   <script>
     globalThis.esriConfig = {
       apiKey: "AAPTaQEQzNWZ0WEvEvKbqlg6rkg..gsvO727LwsNXqFt0JP8NvoSWy79pHRsSedPcdbmeXycD5QYxFkdAcq7s5JkWV34vC9U8G1DMUsrE1cmyakycmS5p8aZdCVWRKFwNLqL-oMgzveI3s9-ubiIR1BUfIaVflP6ElUBsCQgTe8PLTlDepO2Nn2p-VnVT6kZzz01ygw21kTHTc3tj5BvftC7merFVanwR1_HxznnKFLm5CaFLL4fbPww7trBNMXFKfZv1W_CwDMu63PN_gEqdrlzpP903HG0UqCVEF0eD57pbv5NsRT3W44mpbtiRWTXw6dTQpmbZX8mRHESz8NM439kpso2hYEEld5MgV0iZet4hMqQsNimzAT1_cwiX1Ncd"
     }
   </script>
-
   <script type="module" src="https://js.arcgis.com/5.2"></script>
 
+  
   <script type="module">
-    const [WebMap, MapView] = await $arcgis.import([
+    const [WebMap, MapView, LayerList] = await $arcgis.import([
       "@arcgis/core/WebMap.js",
-      "@arcgis/core/views/MapView.js"
+      "@arcgis/core/views/MapView.js",
+      "@arcgis/core/widgets/LayerList.js"
     ]);
 
     const webmap = new WebMap({
@@ -45,6 +48,13 @@ https://developers.arcgis.com/javascript/latest/sample-code/layer-list/
       container: "viewDiv",
       map: webmap
     });
+
+    //LayerList
+    const layerList = new LayerList({
+      view
+    });
+    view.ui.add(layerList, "bottom-right");
+
 
     //Scale bar
     await customElements.whenDefined("arcgis-scale-bar");
@@ -69,38 +79,7 @@ https://developers.arcgis.com/javascript/latest/sample-code/layer-list/
     <b>Zoom in</b> to see the full site names.<br>
     <b>Click</b> a site marker to see more information.  </div>
 `;
-   view.ui.add(instructionsExpand, "top-left");
-   
-    /*
-          view.popup.dockOptions = {
-            breakpoint: false,
-            buttonEnabled: false,
-            breakpoint: {
-              width: 1200,
-              height: 1200
-            },
-            position: "top-left"
-          };
-    
- 
-
-
-    const homeBtn = new Home({
-      view: view
-    });
-    view.ui.add(homeBtn, "top-left");
-
-
-
-    /*
-        view.when(() => {
-          const layerList = new LayerList({
-            view: view
-          });
-          // Add widget to the top right corner of the view
-          view.ui.add(layerList, "top-right");
-        });
-        */
+    view.ui.add(instructionsExpand, "top-left");
   </script>
 </head>
 

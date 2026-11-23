@@ -1,182 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
-  <meta charset="utf-8">
-  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
-  <title>Huiguan in Sichuan</title>
+
 <head>
-<style>
-    #viewDiv {
-      padding: 0;
-      margin: auto;
-      height: 550pt;
-      width: 90%;
-      position: relative;
-    }
-
-
-    .map-btn {
-      margin: auto auto 5px auto;
-      width: 90%;
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      align-items: center;
-      overflow: auto;
-      background-color: #fff;
-    }
-
-    .map-btn-switch {
-      flex-grow: 4;
-      background-color: #808080;
-      padding: 10px;
-      color: #fff;
-      margin: 0.5vw;
-      height: 100%;
-      width: 4vw;
-      font-size: min(1vw, 13px);
-      border-radius: 5px;
-      font-weight: 200;
-      cursor: pointer;
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Huiguan in Sichuan</title>
+  <style>
+    h1 {
+      font: bold 25px Arial, Helvetica, sans-serif;
       text-align: center;
+      margin: 1%;
     }
 
-    .active-map {
+    .map-choices {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+      gap: 8px;
+      width: 90%;
+      margin: 0 auto 8px;
+    }
+
+    .map-choices button {
+      padding: 8px;
+      border: 0;
+      border-radius: 5px;
+      background: #6b6b6b;
       color: #fff;
-      background-color: #595959;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .map-choices button:hover,
+    .map-choices button[aria-pressed="true"] {
+      background: #454545;
+    }
+
+    .map-choices button[aria-pressed="true"] {
       font-weight: 700;
     }
 
-    .map-btn-switch:hover{
-      background-color: #616569
+    .map-choices button:focus-visible {
+      outline: 2px solid #242424;
+      outline-offset: 2px;
+    }
+
+    #viewDiv {
+      display: block;
+      width: 90%;
+      height: 550pt;
+      margin: auto;
+    }
+
+    .map-instructions {
+      box-sizing: border-box;
+      width: min(300px, 65vw);
+      padding: 10px;
+      background: var(--calcite-color-foreground-1, white);
+      color: var(--calcite-color-text-1, black);
     }
   </style>
 
-<link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
-<script src="https://js.arcgis.com/4.29/"></script>
+  <link rel="stylesheet" href="https://js.arcgis.com/5.2/esri/themes/light/main.css" />
+  <script>
+    globalThis.esriConfig = {
+      apiKey: "AAPTaQEQzNWZ0WEvEvKbqlg6rkg..gsvO727LwsNXqFt0JP8NvoSWy79pHRsSedPcdbmeXycD5QYxFkdAcq7s5JkWV34vC9U8G1DMUsrE1cmyakycmS5p8aZdCVWRKFwNLqL-oMgzveI3s9-ubiIR1BUfIaVflP6ElUBsCQgTe8PLTlDepO2Nn2p-VnVT6kZzz01ygw21kTHTc3tj5BvftC7merFVanwR1_HxznnKFLm5CaFLL4fbPww7trBNMXFKfZv1W_CwDMu63PN_gEqdrlzpP903HG0UqCVEF0eD57pbv5NsRT3W44mpbtiRWTXw6dTQpmbZX8mRHESz8NM439kpso2hYEEld5MgV0iZet4hMqQsNimzAT1_cwiX1Ncd"
+    }
+  </script>
+  <script type="module" src="https://js.arcgis.com/5.2"></script>
 
-<script>
-    /******
-     * Source code comes from Esri developer tutorial
-     * Swap web maps in the same view
-     * https://developers.arcgis.com/javascript/latest/sample-code/webmap-swap/
-     ******/
-    require([
-      "esri/config",
-      "esri/views/MapView",
-      "esri/widgets/ScaleBar",
-      "esri/widgets/Legend",
-      "esri/widgets/Home",
-      "esri/widgets/Expand",
-	  "esri/WebMap"
-    ], (esriConfig, MapView, ScaleBar, Legend, Home, Expand, WebMap) => {
-      esriConfig.apiKey = "AAPTxy8BH1VEsoebNVZXo8HurJak9CPH5_OFjiHujg4DhDoGlUW8PiQsdlPUUw8aiFSpEsAoLwYVstgezIVEkEGsAlOoUUVlnEaxypVsmF5hl8-8QIY7FHj5XxZDARBFOD5Rc4dfXGV15yJQRjYrQcMB5AYauuAhqzWtT6rWEpSSaxlBtP5IfcQc0yV__NmXgtgE0965MGkY0gLroQc4ci0G9ZNlZOKHoPec_2wrMglaoCOVKtIAmeuKdj0-80WDDF7Vhpq1L1pMAo3CLLxLCVVIr2rrMcM8TerV3-D7YYeBVc_-2Ka9MQYETLocofybAMhTzOWJ7ouQoM7vqrw1HME6Og..AT1_jaVOiTc2";
-      const webmapids = [
-        "f5d5f81f0c6a4748aa19b64dd756925c",
-        "4522aa2ac2fe4a0db3f09f6c0ea00d03",
-        "f82fcdf963094e51b2f8b536013e2133",
-        "e501a89a6eaf4e3497906b73016cfd2a",
-        "612cb10b65ef4a70a1703c71bd47980d",
-        "a9a688b4a7b94b13804aa65d7b391221",
-        "deb50a761219460591496a0b3a0750f3",
-        "3834b3c9f1e54fde9f5d4530109776d5"
-      ];
-      /***************
-       * Create multiple WebMap instances
-       *****************/
-      const webmaps = webmapids.map((webmapid) => {
-        return new WebMap({
-          portalItem: {
-            id: webmapid
-          }
-        });
-      });
-      /***********************
-       * Initialize the View with the first WebMap
-       **********************/
-      const view = new MapView({
-        map: webmaps[0],
-        container: "viewDiv",
-		center: [104.838384, 30.158838]
-      });
-      /****************************
-       * On a button click, change the map of the View
-      *****************************/
-      document.querySelector(".map-btn").addEventListener("click", (event) => {
-        const id = event.target.getAttribute("data-id");
-        console.log(event.target.getAttribute("data-id"))
-        if (id) {
-          const webmap = webmaps[id];
-          view.map = webmap;
-          const nodes = document.querySelectorAll(".map-btn-switch");
-          for (let idx = 0; idx < nodes.length; idx++) {
-            const node = nodes[idx];
-            const mapIndex = node.getAttribute("data-id");
-            if (mapIndex === id) {
-              node.classList.add("active-map");
-            } else {
-              node.classList.remove("active-map");
-            }
-          }
+  <script type="module">
+    const [WebMap] = await $arcgis.import(["@arcgis/core/WebMap.js"]);
+    await Promise.all([
+      customElements.whenDefined("arcgis-map"),
+      customElements.whenDefined("arcgis-popup")
+    ]);
+
+    const mapElement = document.querySelector("#viewDiv");
+    const popup = document.querySelector("#prefecturePopup");
+    const buttons = [...document.querySelectorAll(".map-choices button")];
+
+    popup.dockOptions = {
+      buttonEnabled: false,
+      breakpoint: { width: 1200, height: 1200 },
+      position: "top-left"
+    };
+
+    // Esri sample: https://developers.arcgis.com/javascript/latest/sample-code/webmap-swap/
+    const webmaps = buttons.map((button) => new WebMap({
+      portalItem: { id: button.dataset.itemId }
+    }));
+
+    let activeButton = buttons[0];
+    mapElement.center = [104.838384, 30.158838];
+    mapElement.map = webmaps[0];
+
+    buttons.forEach((button, index) => {
+      button.addEventListener("click", () => {
+        if (button === activeButton) {
+          return;
         }
-      });
-      view.popup.dockOptions = {
-        breakpoint: false,
-        buttonEnabled: false,
-        breakpoint: {
-          width: 1200,
-          height: 1200
-        },
-        position: "top-left"
-      };
-      const scalebar = new ScaleBar({
-        view: view
-      });
-      view.ui.add(scalebar, "bottom-left");
-      const legend = new Legend({
-        view: view
-      });
-      view.ui.add(legend, "top-right");
 
-      const homeBtn = new Home({
-        view: view
+        mapElement.closePopup();
+        mapElement.map = webmaps[index];
+        activeButton.setAttribute("aria-pressed", "false");
+        button.setAttribute("aria-pressed", "true");
+        activeButton = button;
       });
-      view.ui.add(homeBtn, "top-left");
-
-      const instructionsExpand = new Expand({
-        expandIcon: "question",
-        expandTooltip: "How to use this map",
-        view: view,
-        expanded: true,
-        content: `
-        <div style='width:300px; padding:10px; background-color:white'>
-          <b>Click</b> on buttons above to see maps for different huiguan. 
-          <b>Zoom in</b> to see the names of the prefectures. 
-          <b>Click</b> on prefectures to see more detail.</div>
-        `
-      });
-      view.ui.add(instructionsExpand, "top-left");
     });
-	  
   </script>
 </head>
 
 <body>
-    <h1 style="font-size: 25px;position: relative;
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;margin:1%">Distribution of <em>Huiguan</em> in Sichuan</h1>
-	
-<section class="esri-widget">
-	<div class="map-btn">
-	<div class="map-btn-switch active-map" data-id="0">主要會館<br>Predominant</div>
-	<div class="map-btn-switch" data-id="1">禹王宮<br>Yuwanggong</div>
-	<div class="map-btn-switch" data-id="2">萬壽宮<br>Wanshougong</div>
-	<div class="map-btn-switch" data-id="3">川主廟<br>Chuanzhumiao</div>
-	<div class="map-btn-switch" data-id="4">南華宮<br>Nanhuagong</div>
-	<div class="map-btn-switch" data-id="5">天后宮<br>Tianhougong</div>
-	<div class="map-btn-switch" data-id="6">帝主宮<br>Dizhugong</div>
-	<div class="map-btn-switch" data-id="7">關帝廟 <br>Guandimiao</div>
-	</div>
-</section>
-<div id="viewDiv" class="esri-widget"></div>
+  <h1>Distribution of <em>Huiguan</em> in Sichuan</h1>
+
+  <div class="map-choices" role="group" aria-label="Huiguan maps">
+    <button type="button" data-item-id="f5d5f81f0c6a4748aa19b64dd756925c" aria-pressed="true" aria-controls="viewDiv"><span lang="zh-Hant">主要會館</span><br>Predominant</button>
+    <button type="button" data-item-id="4522aa2ac2fe4a0db3f09f6c0ea00d03" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">禹王宮</span><br>Yuwanggong</button>
+    <button type="button" data-item-id="f82fcdf963094e51b2f8b536013e2133" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">萬壽宮</span><br>Wanshougong</button>
+    <button type="button" data-item-id="e501a89a6eaf4e3497906b73016cfd2a" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">川主廟</span><br>Chuanzhumiao</button>
+    <button type="button" data-item-id="612cb10b65ef4a70a1703c71bd47980d" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">南華宮</span><br>Nanhuagong</button>
+    <button type="button" data-item-id="a9a688b4a7b94b13804aa65d7b391221" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">天后宮</span><br>Tianhougong</button>
+    <button type="button" data-item-id="deb50a761219460591496a0b3a0750f3" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">帝主宮</span><br>Dizhugong</button>
+    <button type="button" data-item-id="3834b3c9f1e54fde9f5d4530109776d5" aria-pressed="false" aria-controls="viewDiv"><span lang="zh-Hant">關帝廟</span><br>Guandimiao</button>
+  </div>
+
+  <arcgis-map id="viewDiv" aria-label="Distribution of Huiguan in Sichuan">
+    <arcgis-zoom slot="top-left"></arcgis-zoom>
+    <arcgis-home slot="top-left"></arcgis-home>
+    <arcgis-expand slot="top-left" expand-icon="question" expand-tooltip="How to use this map" collapse-tooltip="Hide map instructions" expanded>
+      <div class="map-instructions">
+        Choose a huiguan map above.<br>
+        Zoom in to see prefecture names.<br>
+        Select a prefecture to see more details.
+      </div>
+    </arcgis-expand>
+    <arcgis-legend slot="top-right"></arcgis-legend>
+    <arcgis-scale-bar slot="bottom-left" unit="metric"></arcgis-scale-bar>
+    <arcgis-placement slot="bottom-right">
+      <arcgis-attribution></arcgis-attribution>
+    </arcgis-placement>
+    <arcgis-popup id="prefecturePopup" slot="popup"></arcgis-popup>
+  </arcgis-map>
 </body>
+
 </html>
